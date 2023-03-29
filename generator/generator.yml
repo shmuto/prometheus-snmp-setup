@@ -1,0 +1,15 @@
+modules:
+  if_mib:
+    walk: [sysUpTime, interfaces, ifXTable]
+    lookups:
+      - source_indexes: [ifIndex]
+        lookup: ifAlias
+      - source_indexes: [ifIndex]
+        lookup: ifDescr
+      - source_indexes: [ifIndex]
+        lookup: ifName
+    overrides:
+      ifOperStatus:
+        type: EnumAsStateSet
+      ifAdminStatus:
+        type: EnumAsStateSet

@@ -1,0 +1,44 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - target: 9090
+        published: 9090
+    volumes:
+      - type: volume
+        source: prometheus-data
+        target: /prometheus
+      - type: bind
+        source: ./prometheus/
+        target: /etc/prometheus/
+    command:
+      - --config.file=/etc/prometheus/prometheus.yaml
+
+  snmp-exporter:
+    depends_on:
+      generator:
+        condition: service_completed_successfully
+    image: prom/snmp-exporter:latest
+    volumes:
+      - type: bind
+        source: ./generator/snmp.yml
+        target: /etc/snmp-exporter/snmp.yml
+    command:
+      - --config.file=/etc/snmp_exporter/snmp.yml
+  
+  generator:
+    build: ./generator
+    volumes:
+      - type: bind
+        source: ./snmp-exporter/snmp.yml
+        target: /opt/snmp.yml
+      - type: bind
+        source: ./generator/mibs/
+        target: /opt/mibs/
+      - type: bind
+        source: ./generator/generator.yml
+        target: /opt/generator.yml
+    command: generate
+
+volumes:
+  prometheus-data:
