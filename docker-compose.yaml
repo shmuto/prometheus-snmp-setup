@@ -30,7 +30,7 @@ services:
     build: ./generator
     volumes:
       - type: bind
-        source: ./snmp-exporter/snmp.yml
+        source: ./generator/snmp.yml
         target: /opt/snmp.yml
       - type: bind
         source: ./generator/mibs/
