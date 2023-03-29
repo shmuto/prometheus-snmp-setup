@@ -38,7 +38,8 @@ services:
       - type: bind
         source: ./generator/generator.yml
         target: /opt/generator.yml
-    command: generate
-
+    command:
+      - "-c"
+      - "make mibs; generator generate"
 volumes:
   prometheus-data:
